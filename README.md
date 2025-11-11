@@ -51,6 +51,3 @@ This ensures **efficient and life-saving response sequencing**.
 | Evaluation | Confusion Matrix & Accuracy Score |
 
 ---
-
-## 📁 Project Structure
-
