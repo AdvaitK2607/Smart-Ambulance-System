@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1329458765341298765,
+    "name": "Rahul",
+    "age": 28,
+    "location": "Sitabuldi",
+    "condition": "General Medical Emergency",
+    "priority": "LOW",
+    "severity_score": 10,
+    "symptoms": "",
+    "time": "Just now",
+    "phone": "9876543210"
+  },
+  {
+    "id": 2213498712390871234,
+    "name": "Arjun",
+    "age": 41,
+    "location": "Wardhaman Nagar",
+    "condition": "Minor Injury | Leg Fracture Suspected",
+    "priority": "MEDIUM",
+    "severity_score": 55,
+    "symptoms": "",
+    "time": "Just now",
+    "phone": "9012345678"
+  },
+  {
+    "id": 8712398712987123098,
+    "name": "Mahesh",
+    "age": 63,
+    "location": "Nandanvan",
+    "condition": "Fever | Weakness | Dehydration",
+    "priority": "LOW",
+    "severity_score": 20,
+    "symptoms": "",
+    "time": "Just now",
+    "phone": "9865432109"
+  },
+  {
+    "id": 1239871239871283971,
+    "name": "Pooja",
+    "age": 19,
+    "location": "Zingabai Takli",
+    "condition": "Severe Abdominal Pain | Vomiting",
+    "priority": "MEDIUM",
+    "severity_score": 45,
+    "symptoms": "",
+    "time": "Just now",
+    "phone": "9901234567"
+  }
+]
