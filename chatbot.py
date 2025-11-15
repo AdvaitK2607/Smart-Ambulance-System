@@ -2,6 +2,32 @@ import streamlit as st
 import requests
 import json
 
+# --------------------------------------------------
+# 🎨 ADD GRADIENT BACKGROUND (BLUE → DARK NAVY)
+# --------------------------------------------------
+st.markdown("""
+    <style>
+    /* 🔵 Gradient Background */
+    .stApp {
+        background: linear-gradient(-45deg, 
+            #3b82f6,   /* Blue */
+            #1e3a8a,   /* Navy */
+            #0f1a3a,   /* Deep Navy */
+            #000814    /* Dark Navy */
+        );
+        background-size: 400% 400%;
+        animation: gradientShift 15s ease infinite;
+    }
+
+    @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+
 # ------------------------------
 # 🔐 GEMINI API SETTINGS
 # ------------------------------
@@ -49,14 +75,12 @@ def ask_gemini(messages):
     response = requests.post(API_URL, headers=headers, json=payload)
     data = response.json()
 
-    # Check if response contains AI text
     if "candidates" in data:
         try:
             return data["candidates"][0]["content"]["parts"][0]["text"]
-        except Exception:
+        except:
             return "⚠️ Parsing Error:\n" + json.dumps(data, indent=2)
 
-    # Otherwise error
     return "⚠️ API Error:\n" + json.dumps(data, indent=2)
 
 
@@ -102,9 +126,7 @@ user_input = st.chat_input("Describe your symptoms or ask a medical question..."
 
 if user_input:
     st.session_state.messages.append({"role": "user", "content": user_input})
-
     reply = ask_gemini(st.session_state.messages)
-
     st.session_state.messages.append({"role": "assistant", "content": reply})
-
     st.rerun()
+
