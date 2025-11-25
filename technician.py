@@ -12,6 +12,13 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
+# -------------------------------------------------------
+# AUTO REFRESH (every 5 seconds)
+# -------------------------------------------------------
+from streamlit_autorefresh import st_autorefresh
+st_autorefresh(interval=5000, key="auto_refresh_tech")
+
+
 # File paths for shared data
 QUEUE_FILE = "emergency_queue.json"
 STATS_FILE = "system_stats.json"
@@ -78,15 +85,15 @@ def load_fleet_status():
             with open(FLEET_FILE, 'r') as f:
                 return json.load(f)
         return {
-            'total': 7,
-            'available': 5,
+            'total': 10,
+            'available': 8,
             'en_route': 0,
             'maintenance': 2
         }
     except:
         return {
-            'total': 7,
-            'available': 5,
+            'total': 10,
+            'available': 8,
             'en_route': 0,
             'maintenance': 2
         }
@@ -338,16 +345,13 @@ if 'user_type' not in st.session_state or st.session_state.user_type != "technic
         st.switch_page("index.py")
     st.stop()
 
-# Load data from files
-queue_from_file = load_queue()
+# Load data from files - Always load queue fresh (not cached in session state)
+# Queue should always reflect the latest file contents
+current_queue = load_queue()
 stats_from_file = load_stats()
 fleet_from_file = load_fleet_status()
 
-if 'queue_data' not in st.session_state:
-    st.session_state.queue_data = queue_from_file
-else:
-    st.session_state.queue_data = load_queue()
-    
+# Stats and fleet can be cached in session state for performance
 if 'stats_data' not in st.session_state:
     st.session_state.stats_data = stats_from_file
 else:
@@ -415,15 +419,9 @@ with col4:
 
 st.markdown("<hr>", unsafe_allow_html=True)
 
-# Priority Queue Section
-st.markdown("<h3 class='section-header'>🎯 Priority Queue</h3>", unsafe_allow_html=True)
-
-# Initialize queue
-if 'queue_initialized' not in st.session_state:
-    st.session_state.queue_initialized = True
-
+# Always use fresh queue data from file (not session state)
 # Display queue
-if len(st.session_state.queue_data) == 0:
+if len(current_queue) == 0:
     st.markdown("""
         <div class='info-box'>
             <p>✅ No pending emergency requests. All clear!</p>
@@ -432,7 +430,7 @@ if len(st.session_state.queue_data) == 0:
 else:
     # Sort by priority and severity
     priority_order = {'HIGH': 0, 'MEDIUM': 1, 'LOW': 2}
-    sorted_queue = sorted(st.session_state.queue_data, 
+    sorted_queue = sorted(current_queue, 
                          key=lambda x: (priority_order[x['priority']], -x['severity_score']))
     
     for idx, patient in enumerate(sorted_queue):
@@ -454,7 +452,6 @@ else:
                         <div class='queue-detail'>
                             <strong>Priority:</strong> {patient['priority']} | 
                             <strong>Severity Score:</strong> {patient['severity_score']} | 
-                            <strong>Time:</strong> {patient['time']}
                         </div>
                     </div>
                 """, unsafe_allow_html=True)
@@ -477,9 +474,10 @@ else:
                         st.session_state.fleet_status['en_route'] += 1
                         save_fleet_status(st.session_state.fleet_status)
                         
-                        # Remove from queue
-                        st.session_state.queue_data = [p for p in st.session_state.queue_data if p['id'] != patient['id']]
-                        save_queue(st.session_state.queue_data)
+                        # Remove from queue - reload fresh queue, remove the dispatched one, and save
+                        updated_queue = load_queue()
+                        updated_queue = [p for p in updated_queue if p['id'] != patient['id']]
+                        save_queue(updated_queue)
                         st.rerun()
                 else:
                     st.button(f"⚠️ No Ambulances", key=f"no_amb_{patient['id']}", disabled=True, use_container_width=True)
@@ -538,8 +536,8 @@ col1, col2, col3 = st.columns(3)
 with col1:
     if st.button("🔄 Reset Fleet Status", key="reset_fleet_unique", use_container_width=True):
         st.session_state.fleet_status = {
-            'total': 7,
-            'available': 5,
+            'total': 10,
+            'available': 8,
             'en_route': 0,
             'maintenance': 2
         }
