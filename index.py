@@ -477,7 +477,8 @@ with col1:
             time.sleep(0.4)
         st.session_state.user_type = "patient"
         st.session_state.logged_in = True
-        st.switch_page("pages/patient.py")
+        st.switch_page("patient.py")
+
 
 with col2:
     st.markdown("""
@@ -496,7 +497,8 @@ with col2:
             time.sleep(0.4)
         st.session_state.user_type = "technician"
         st.session_state.logged_in = True
-        st.switch_page("pages/technician.py")
+        st.switch_page("technician.py")
+
 
 with col3:
     st.markdown("""
@@ -513,7 +515,8 @@ with col3:
     if st.button("💬 Open Chatbot", key="chatbot_btn", type="primary"):
         with st.spinner("Launching AI assistant..."):
             time.sleep(0.4)
-        st.switch_page("pages/chatbot.py")
+        st.switch_page("chatbot.py")
+
 
 # ---- UPCOMING FEATURE SECTION: REAL-TIME ROUTING ----
 import streamlit as st
@@ -653,4 +656,5 @@ st.markdown("""
             Developed by:- Aaryan Tamhane, Advait Kulkarni, Soham Shrawankar
         </p>
     </div>
+
 """, unsafe_allow_html=True)
